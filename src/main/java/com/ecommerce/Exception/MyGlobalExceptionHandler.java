@@ -25,5 +25,15 @@ public class MyGlobalExceptionHandler {
         return new ResponseEntity<Map<String,String>>(response,HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> myResourceNotFoundException (ResourceNotFoundException arg){
+        String message = arg.getMessage();
+        return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
+    }
 
+    @ExceptionHandler(APIException.class)
+    public ResponseEntity<String> myAPIException (APIException arg){
+        String message = arg.getMessage();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,5 +1,7 @@
 package com.ecommerce.Service;
 
+import com.ecommerce.Exception.APIException;
+import com.ecommerce.Exception.ResourceNotFoundException;
 import com.ecommerce.Model.Category;
 import com.ecommerce.Repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +25,19 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getAllCategories() {
         //return categories;
-        return categoryRepository.findAll();
+        List<Category> allPresent = categoryRepository.findAll();
+        if(allPresent.isEmpty())
+            throw new APIException("The list is blank");
+        return allPresent;
     }
 
     @Override
     public void createCategory(Category category) {
         //category.setCategoryId(nextId++);
         //categories.add(category);
+        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if (savedCategory!=null)
+            throw new APIException("Category with the name " + category.getCategoryName()+ " already exists! ");
         categoryRepository.save(category);
     }
 
@@ -64,10 +72,22 @@ public class CategoryServiceImpl implements CategoryService {
 //
 //    }
 
+//    @Override
+//    public String deleteCategory(Long categoryId) {
+//        Category savedCategory = categoryRepository.findById(categoryId)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category ID not found. Nothing to Delete!!"));
+//
+//        String categoryName = savedCategory.getCategoryName();
+//        Long categoryIdTaken = savedCategory.getCategoryId();
+//        categoryRepository.delete(savedCategory);
+//        return "Category with category ID " + categoryIdTaken + " deleted successfully! Name was : " + categoryName;
+//
+//    }
+
     @Override
     public String deleteCategory(Long categoryId) {
         Category savedCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category ID not found. Nothing to Delete!!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category","Category ID",categoryId));
 
         String categoryName = savedCategory.getCategoryName();
         Long categoryIdTaken = savedCategory.getCategoryId();
@@ -94,7 +114,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category updateCategory(Category category, Long categoryId) {
 
         Category savedCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category ID not found. Nothing to Update"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category","Category ID",categoryId));
 
         category.setCategoryId(categoryId);
        savedCategory = categoryRepository.save(category);
