@@ -22,7 +22,7 @@ public class Category {
     private Long categoryId;
 
     @NotBlank(message ="Category cannot be Blank!")
-    @Size(min = 5, max = 20, message = "Catogery size is outside limit!")
+    @Size(min = 5, message = "Catogery size is outside limit!")
     private String categoryName;
 
 //    public Category(Long categoryId, String categoryName) {

@@ -8,6 +8,10 @@ import com.ecommerce.Payload.CategoryResponse;
 import com.ecommerce.Repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +37,18 @@ public class CategoryServiceImpl implements CategoryService {
 //    }
 
     @Override
-    public CategoryResponse getAllCategories() {
-        List<Category> allPresent = categoryRepository.findAll();
+    public CategoryResponse getAllCategories(Integer pageNumber,Integer pageSize,String sortBy,String sortOrder) {
+        ///Sort and order starts here
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ?Sort.by(sortBy).ascending()
+                :Sort.by(sortBy).descending();
+
+        ///For Pagination including the sort order up above
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+        List<Category> allPresent = categoryPage.getContent();
+        ///pagination ends here
+
         if(allPresent.isEmpty())
             throw new APIException("The list is blank");
         List<CategoryDTO> categoryDTOS = allPresent.stream()
@@ -42,6 +56,14 @@ public class CategoryServiceImpl implements CategoryService {
                 .toList();
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setCategoryContent(categoryDTOS);
+        /// For pagination data in the get method
+        categoryResponse.setPageNumber(categoryPage.getNumber());
+        categoryResponse.setPageSize(categoryPage.getSize());
+        categoryResponse.setTotalElements(categoryPage.getTotalElements());
+        categoryResponse.setTotalPages(categoryPage.getTotalPages());
+        categoryResponse.setLastPage(categoryPage.isLast());
+        ///ends here pagination details
+
         return categoryResponse;
     }
 

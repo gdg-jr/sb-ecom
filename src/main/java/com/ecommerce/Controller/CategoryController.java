@@ -1,5 +1,6 @@
 package com.ecommerce.Controller;
 
+import com.ecommerce.Config.AppConstants;
 import com.ecommerce.Payload.CategoryDTO;
 import com.ecommerce.Payload.CategoryResponse;
 import com.ecommerce.Service.CategoryService;
@@ -18,6 +19,13 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+/// This is for learning pagination. The mapping is not
+    @GetMapping("/api/echo")
+    public ResponseEntity<String> echoMessage(@RequestParam(name = "message" , defaultValue = "Hello world", required = false) String message) {
+        return new ResponseEntity<>("Message: =" + message , HttpStatus.OK);
+    }
+    /// required anywhere else. Not deleting it.
+
 //    public CategoryController(CategoryService categoryService) {
 //        this.categoryService = categoryService;
 //    }
@@ -28,8 +36,13 @@ public class CategoryController {
 //    }
 
     @GetMapping("/api/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        CategoryResponse categoryList = categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name= "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
+            @RequestParam(name= "pageSize", defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam(name ="sortBy" ,defaultValue = AppConstants.SORT_CATEGORIES_BY,required = false) String sortBy,
+            @RequestParam(name ="sortOrder" ,defaultValue = AppConstants.SORT_CATEGORIES_ORDER,required = false) String sortOrder
+    ) {
+        CategoryResponse categoryList = categoryService.getAllCategories(pageNumber,pageSize,sortBy,sortOrder);
         return new ResponseEntity<>(categoryList, HttpStatus.FOUND);
     }
 

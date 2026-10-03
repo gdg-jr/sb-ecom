@@ -12,4 +12,11 @@ import java.util.List;
 public class CategoryResponse {
 
     private List<CategoryDTO> categoryContent;
+    ///metaData for Pagination
+    private Integer pageNumber;
+    private Integer pageSize;
+    private Long totalElements;
+    private Integer totalPages;
+    private Boolean lastPage;
+
 }
