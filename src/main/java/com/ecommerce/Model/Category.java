@@ -1,14 +1,14 @@
 package com.ecommerce.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity (name = "Categories")
 
@@ -24,6 +24,10 @@ public class Category {
     @NotBlank(message ="Category cannot be Blank!")
     @Size(min = 5, message = "Catogery size is outside limit!")
     private String categoryName;
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> product =new ArrayList<>();
+
 
 //    public Category(Long categoryId, String categoryName) {
 //        this.categoryId = categoryId;
