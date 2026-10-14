@@ -74,5 +74,40 @@ public class ProductServiceImpl implements ProductService{
         return productResponse;
     }
 
+    @Override
+    public ProductResponse getProductsByCategory(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder, Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new ResourceNotFoundException("Category","CategoryId",categoryId));
+
+        ///Sort and order starts here
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ?Sort.by(sortBy).ascending()
+                :Sort.by(sortBy).descending();
+
+        ///For Pagination including the sort order up above
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
+        //Page<Product> productPage = productRepository.findAll(pageDetails);
+        Page<Product> productPageWithCategory = productRepository.findByCategory(category,pageDetails);
+        List<Product> allPresentWithCategory = productPageWithCategory.getContent();
+        ///pagination ends here
+
+        if(allPresentWithCategory.isEmpty())
+            throw new APIException("The list is blank");
+        List<ProductDTO> productDTOS = allPresentWithCategory.stream()
+                .map(product -> modelMapper.map(product,ProductDTO.class))
+                .toList();
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setProductContent(productDTOS);
+        /// For pagination data in the get method
+        productResponse.setPageNumber(productPageWithCategory.getNumber());
+        productResponse.setPageSize(productPageWithCategory.getSize());
+        productResponse.setTotalElements(productPageWithCategory.getTotalElements());
+        productResponse.setTotalPages(productPageWithCategory.getTotalPages());
+        productResponse.setLastPage(productPageWithCategory.isLast());
+        ///ends here pagination details
+
+        return productResponse;
+    }
+
 
 }
