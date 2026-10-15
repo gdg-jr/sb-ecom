@@ -46,4 +46,28 @@ public class ProductController {
         ProductResponse productListByCategory = productService.getProductsByCategory(pageNumber,pageSize,sortBy,sortOrder,categoryId);
         return new ResponseEntity<>(productListByCategory,HttpStatus.FOUND);
     }
+
+    @GetMapping("/public/products/keyword/{keyword}")
+    public ResponseEntity<ProductResponse> getProductByKeyword(
+            @RequestParam(name= "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
+            @RequestParam(name= "pageSize", defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam(name ="sortBy" ,defaultValue = AppConstants.SORT_PRODUCT_BY,required = false) String sortBy,
+            @RequestParam(name ="sortOrder" ,defaultValue = AppConstants.SORT_PRODUCTS_ORDER,required = false) String sortOrder,
+            @PathVariable String keyword
+    ){
+        ProductResponse productListByKeyword = productService.getProductByKeyword(pageNumber,pageSize,sortBy,sortOrder,keyword);
+        return new ResponseEntity<>(productListByKeyword,HttpStatus.FOUND);
+    }
+
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long productId){
+        ProductDTO productDTOtoUpdate = productService.updateProduct(productDTO,productId);
+        return new ResponseEntity<>(productDTOtoUpdate,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/products/{productId}")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId){
+        ProductDTO productDTOtoDelete = productService.deleteProduct(productId);
+        return new ResponseEntity<>(productDTOtoDelete,HttpStatus.OK);
+    }
 }

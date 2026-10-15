@@ -10,4 +10,10 @@ public interface ProductService {
     ProductResponse getAllProducts(Integer pageNumber,Integer pageSize,String sortBy,String sortOrder);
 
     ProductResponse getProductsByCategory(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder, Long categoryId);
+
+    ProductResponse getProductByKeyword(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder, String keyword);
+
+    ProductDTO updateProduct(ProductDTO productDTO, Long productId);
+
+    ProductDTO deleteProduct(Long productId);
 }

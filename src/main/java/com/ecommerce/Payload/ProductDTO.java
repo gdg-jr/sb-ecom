@@ -1,6 +1,5 @@
 package com.ecommerce.Payload;
 
-import com.ecommerce.Model.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
