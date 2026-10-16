@@ -25,7 +25,7 @@ public class Category {
     @Size(min = 5, message = "Catogery size is outside limit!")
     private String categoryName;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
     private List<Product> product =new ArrayList<>();
 
 
