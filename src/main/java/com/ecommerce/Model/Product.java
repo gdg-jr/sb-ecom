@@ -6,11 +6,14 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity(name = "products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name ="products")
+@ToString
 public class Product {
 
     @Id
@@ -31,6 +34,9 @@ public class Product {
     @JoinColumn(name = "category_Id")
     private Category category;
 
-    //private Long sellerId;
+    //private Long sellerId; It is actually a link with user table who would sell.
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private User user;
 
 }
